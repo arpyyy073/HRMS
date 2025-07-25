@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hyacinth - Employee</title>
-  <link rel="stylesheet" href="/style/employee.css" />
+  <link rel="stylesheet" href="../../style/employee.css" />
 
   <!-- DataTables CSS -->
   <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.min.css" />
@@ -15,6 +15,7 @@
 
   <!-- DataTables JS -->
   <script src="https://cdn.datatables.net/2.3.2/js/dataTables.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </head>
 
@@ -50,7 +51,7 @@
           <td>Active</td>
           <td class="action-btns">
             <button class="edit-btn">Edit</button>
-            <button class="delete-btn">Delete</button>
+            <button class="delete-btn" data-id="143">Delete</button>
             <button class="view-btn" onclick='showEmployeeDetails({
   name: "John Doe",
   dob: "1990-05-15",
@@ -107,14 +108,59 @@
         modal.style.display = 'none';
       }
     };
-  </script>
 
 
 
 
   </script>
 
-  <script src="/js/img.js"></script>
+
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+
+
+    document.querySelectorAll('.delete-btn').forEach(button => {
+
+      button.addEventListener('click',function() {
+
+
+        const ItemId = this.getAttribute('data-id');
+
+
+        Swal.fire({
+
+
+          title: 'Sure na ni?',
+          text: "Di na gud ni mabalik",
+
+          icon:'warning',
+
+          showCancelButton:true,
+          confirmButtonColor: '#e3342f',
+          cancelButtonColor: '#6c757d',
+          confirmButtonText: 'Yes,please delete it!',
+
+
+        }).then((result) => {
+
+
+          if (result.isConfirmed) {
+
+            window.location.href = 'delete.php id = ${ItemID}';
+          }
+
+        });
+
+      });
+
+    });
+
+  });
+</script>
+
+  <script src="../../js/img.js"></script>
 </body>
 
 </html>
