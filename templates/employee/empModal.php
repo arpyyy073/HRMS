@@ -82,3 +82,118 @@
     </div>
   </div>
 </div>
+
+
+<script>
+  document.querySelector('.btn-print').addEventListener('click', function () {
+    const modalBody = document.querySelector('.modal-body').innerHTML;
+
+    const printWindow = window.open('', '', 'width=900,height=700');
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Print Employee Profile</title>
+          <style>
+            body {
+              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+              padding: 40px;
+              background-color: #f9f9f9;
+              color: #333;
+            }
+
+            .print-header {
+              display: flex;
+              align-items: center;
+              gap: 20px;
+              margin-bottom: 30px;
+              border-bottom: 2px solid #444;
+              padding-bottom: 10px;
+            }
+
+            .print-header img {
+              width: 60px;
+              height: 60px;
+              object-fit: contain;
+            }
+
+            .print-header h1 {
+              font-size: 24px;
+              margin: 0;
+              color: #2c3e50;
+            }
+
+            h2, h3 {
+              margin-bottom: 12px;
+              color: #34495e;
+            }
+
+            .info-section {
+              margin-bottom: 30px;
+            }
+
+            .info-grid {
+              display: grid;
+              grid-template-columns: repeat(2, 1fr);
+              gap: 15px 25px;
+              background: #fff;
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 8px;
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            }
+
+            .info-item {
+              padding-bottom: 10px;
+              border-bottom: 1px dashed #ddd;
+            }
+
+            label {
+              font-weight: bold;
+              display: block;
+              font-size: 14px;
+              color: #555;
+            }
+
+            .info-value {
+              margin-top: 4px;
+              font-size: 16px;
+              color: #111;
+            }
+
+            .status-active {
+              color: green;
+              font-weight: bold;
+            }
+
+            
+
+            @media print {
+              .no-print {
+                display: none;
+            
+              }
+              @page {
+  margin: 0;
+  size: auto;
+}
+
+            }
+          </style>
+        </head>
+        <body>
+          <div class="print-header">
+            <img src="../../images/assets/logo.png" alt="Logo">
+            <h1>Hyacinth HRMS - Employee Profile</h1>
+          </div>
+
+          ${modalBody}
+        </body>
+      </html>
+    `);
+
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+  });
+</script>

@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hyacinth-Dashboard</title>
-  <link rel="stylesheet" href="/style/dashboard.css">
+  <link rel="stylesheet" href="../../style/dashboard.css">
 </head>
 
 <body>
@@ -44,8 +44,8 @@
     </section>
   </div>
 
-  <script src="/js/dashboard.js"></script>
-  <script src="/js/img.js"></script>
+  <script src="../../js/dashboard.js"></script>
+  <script src="../../js/img.js"></script>
 
 
 </body>

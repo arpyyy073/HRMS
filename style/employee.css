@@ -169,7 +169,7 @@ table.dataTable tbody tr:hover {
 
 .modal-header {
   padding: 1.5rem 2rem;
-  background: linear-gradient(135deg, #4a6cf7 0%, #2541b2 100%);
+  background: linear-gradient(to right, #242424, #801100);
   color: white;
   display: flex;
   justify-content: space-between;
