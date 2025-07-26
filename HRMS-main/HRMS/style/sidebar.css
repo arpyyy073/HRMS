@@ -1,0 +1,178 @@
+@import url(style.css);
+
+
+
+/* Icon-only Sidebar */
+.sidebar {
+  width: 70px;
+  background-image: linear-gradient(to right, #242424, #801100);
+  padding: 20px 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+  z-index: 1000;
+  color: white;
+  transition: transform 0.3s ease;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.logo-container img {
+  width: 40px;
+  height: 40px;
+}
+
+.sidebar h2 {
+  display: none; /* Hide title */
+}
+
+.sidebar a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 15px 0;
+  color: white;
+  text-decoration: none;
+  transition: background 0.3s;
+}
+
+.sidebar a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.material-symbols-outlined {
+  font-size: 24px;
+}
+
+/* Logout section */
+.logout-section {
+  margin-top: auto;
+  padding: 10px 0;
+  width: 100%;
+}
+
+.logout-link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #e74c3c;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.logout-link .material-symbols-outlined {
+  color: #e74c3c;
+  font-size: 24px;
+}
+
+/* Optional: tooltip effect */
+.sidebar a[title]:hover::after,
+.logout-link[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  left: 70px;
+  background: #333;
+  color: #fff;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+/* Icon-only Sidebar */
+.sidebar {
+  width: 70px;
+  background-image: linear-gradient(to right, #242424, #801100);
+  padding: 20px 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+  z-index: 1000;
+  color: white;
+  transition: transform 0.3s ease;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.logo-container img {
+  width: 40px;
+  height: 40px;
+}
+
+.sidebar h2 {
+  display: none; /* Hide title */
+}
+
+.sidebar a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 15px 0;
+  color: white;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.sidebar a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.material-symbols-outlined {
+  font-size: 24px;
+}
+
+/* Logout section */
+.logout-section {
+  margin-top: auto;
+  padding: 10px 0;
+  width: 100%;
+}
+
+.logout-link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #e74c3c;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.logout-link .material-symbols-outlined {
+  color: #e74c3c;
+  font-size: 24px;
+}
+
+/* Optional: tooltip effect */
+.sidebar a[title]:hover::after,
+.logout-link[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  left: 70px;
+  background: #333;
+  color: #fff;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
