@@ -141,3 +141,5 @@ renderDepartments();
 searchInput.addEventListener("input", (e) => {
   renderDepartments(e.target.value);
 });
+
+
