@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hyacinth - Employee</title>
+  <link rel="stylesheet" href="../../style/employee.css" />
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-storage-compat.js"></script>
+
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.min.css" />
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <!-- DataTables JS -->
+  <script src="https://cdn.datatables.net/2.3.2/js/dataTables.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    /* Additional styles for edit modal */
+    .edit-input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+    
+    .edit-input:focus {
+      border-color: #801100;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(128, 17, 0, 0.2);
+    }
+    
+    .edit-select {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      background-color: white;
+      cursor: pointer;
+    }
+    
+    .btn-save {
+      background-color: #801100;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-save:hover {
+      background-color: #5c0c00;
+    }
+    
+    .filter-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .filter-controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    
+    .add-employee-btn {
+      background-color: #801100;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .add-employee-btn:hover {
+      background-color: #5c0c00;
+    }
+    
+    .add-employee-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Profile picture styles */
+    .profile-picture-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .profile-picture {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 15px;
+    }
+    
+    .upload-btn-wrapper {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+    }
+    
+    .upload-btn {
+      border: 1px solid #801100;
+      color: #801100;
+      background-color: white;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .upload-btn:hover {
+      background-color: #801100;
+      color: white;
+    }
+    
+    .upload-btn-wrapper input[type=file] {
+      font-size: 100px;
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+    
+    .profile-picture-placeholder {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background-color: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #888;
+      font-size: 14px;
+      border: 4px solid #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 15px;
+    }
+    
+    .profile-picture-placeholder svg {
+      width: 50px;
+      height: 50px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Sidebar container -->
+  <div id="sidebar-container"></div>
+  
+  <!-- View Modal -->
+  <div id="employeeModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">
+          <svg class="icon-user" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" fill="currentColor" />
+            <path d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z" fill="currentColor" />
+          </svg>
+          Employee Profile
+        </h2>
+        <button class="close-modal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="profile-picture-container">
+          <div id="empPictureContainer">
+            <img id="empPicture" class="profile-picture" src="" alt="Employee Picture">
+          </div>
+        </div>
+
+        <div class="info-section">
+          <h3 class="section-title">Personal Information</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Full Name</label>
+              <div class="info-value" id="empName">John Doe</div>
+            </div>
+            <div class="info-item">
+              <label>Date of Birth</label>
+              <div class="info-value" id="empDob">1990-05-15</div>
+            </div>
+            <div class="info-item">
+              <label>Address</label>
+              <div class="info-value" id="empAddress">123 Main St</div>
+            </div>
+            <div class="info-item">
+              <label>Phone Number</label>
+              <div class="info-value" id="empPhone">09123456789</div>
+            </div>
+            <div class="info-item">
+              <label>Email</label>
+              <div class="info-value" id="empEmail">john@example.com</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <h3 class="section-title">Employment Details</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Job Title</label>
+              <div class="info-value" id="empJob">Software Developer</div>
+            </div>
+            <div class="info-item">
+              <label>Department</label>
+              <div class="info-value" id="empDept">IT</div>
+            </div>
+            <div class="info-item">
+              <label>Organization</label>
+              <div class="info-value" id="empOrg">RAHYO</div>
+            </div>
+            <div class="info-item">
+              <label>Hire Date</label>
+              <div class="info-value" id="empHire">2023-01-10</div>
+            </div>
+            <div class="info-item">
+              <label>Status</label>
+              <div class="info-value status-active" id="empStatus">Active</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-print">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 9V2H18V9" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M6 18H4C2.89543 18 2 17.1046 2 16V11C2 9.89543 2.89543 9 4 9H20C21.1046 9 22 9.89543 22 11V16C22 17.1046 21.1046 18 20 18H18" stroke="currentColor" stroke-width="2" />
+            <path d="M18 14H6V22H18V14Z" stroke="currentColor" stroke-width="2" />
+          </svg>
+          Print Profile
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div id="editEmployeeModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">
+          <svg class="icon-user" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" fill="currentColor" />
+            <path d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z" fill="currentColor" />
+          </svg>
+          Edit Employee
+        </h2>
+        <button class="close-modal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="profile-picture-container">
+          <div id="editEmpPictureContainer">
+            <img id="editEmpPicture" class="profile-picture" src="" alt="Employee Picture">
+          </div>
+          <div class="upload-btn-wrapper">
+            <button class="upload-btn">Change Photo</button>
+            <input type="file" id="editEmpPhotoUpload" accept="image/*">
+          </div>
+        </div>
+
+        <div class="info-section">
+          <h3 class="section-title">Personal Information</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Full Name</label>
+              <input type="text" class="edit-input" id="editEmpName">
+            </div>
+            <div class="info-item">
+              <label>Date of Birth</label>
+              <input type="date" class="edit-input" id="editEmpDob">
+            </div>
+            <div class="info-item">
+              <label>Address</label>
+              <input type="text" class="edit-input" id="editEmpAddress">
+            </div>
+            <div class="info-item">
+              <label>Phone Number</label>
+              <input type="tel" class="edit-input" id="editEmpPhone">
+            </div>
+            <div class="info-item">
+              <label>Email</label>
+              <input type="email" class="edit-input" id="editEmpEmail">
+            </div>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <h3 class="section-title">Employment Details</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Job Title</label>
+              <input type="text" class="edit-input" id="editEmpJob">
+            </div>
+            <div class="info-item">
+              <label>Department</label>
+              <select class="edit-select" id="editEmpDept">
+                <option value="ADMIN">ADMIN</option>
+                <option value="IT">IT</option>
+                <option value="HR">HR</option>
+              </select>
+            </div>
+            <div class="info-item">
+              <label>Organization</label>
+              <select class="edit-select" id="editEmpOrg">
+                <option value="RAHYO">RAHYO</option>
+                <option value="HHI">HHI</option>
+              </select>
+            </div>
+            <div class="info-item">
+              <label>Hire Date</label>
+              <input type="date" class="edit-input" id="editEmpHire">
+            </div>
+            <div class="info-item">
+              <label>Status</label>
+              <select class="edit-select" id="editEmpStatus">
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-print" onclick="printEditForm()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 9V2H18V9" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M6 18H4C2.89543 18 2 17.1046 2 16V11C2 9.89543 2.89543 9 4 9H20C21.1046 9 22 9.89543 22 11V16C22 17.1046 21.1046 18 20 18H18" stroke="currentColor" stroke-width="2" />
+            <path d="M18 14H6V22H18V14Z" stroke="currentColor" stroke-width="2" />
+          </svg>
+          Print
+        </button>
+        <button class="btn-save" id="saveEmployeeBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 21H5C3.89543 21 3 20.1046 3 19V5C3 3.89543 3.89543 3 5 3H16.1716C16.702 3 17.2107 3.21071 17.5858 3.58579L20.4142 6.41421C20.7893 6.78929 21 7.29799 21 7.82843V19C21 20.1046 20.1046 21 19 21Z" stroke="currentColor" stroke-width="2" />
+            <path d="M17 21V13H7V21" stroke="currentColor" stroke-width="2" />
+            <path d="M7 3V8H15" stroke="currentColor" stroke-width="2" />
+          </svg>
+          Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Employee Modal -->
+  <div id="addEmployeeModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">
+          <svg class="icon-user" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" fill="currentColor" />
+            <path d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z" fill="currentColor" />
+          </svg>
+          Add New Employee
+        </h2>
+        <button class="close-modal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="profile-picture-container">
+          <div id="addEmpPictureContainer" class="profile-picture-placeholder">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" fill="#888" />
+              <path d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z" fill="#888" />
+            </svg>
+          </div>
+          <div class="upload-btn-wrapper">
+            <button class="upload-btn">Upload Photo</button>
+            <input type="file" id="addEmpPhotoUpload" accept="image/*">
+          </div>
+        </div>
+
+        <div class="info-section">
+          <h3 class="section-title">Personal Information</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Full Name</label>
+              <input type="text" class="edit-input" id="addEmpName" required>
+            </div>
+            <div class="info-item">
+              <label>Date of Birth</label>
+              <input type="date" class="edit-input" id="addEmpDob" required>
+            </div>
+            <div class="info-item">
+              <label>Address</label>
+              <input type="text" class="edit-input" id="addEmpAddress" required>
+            </div>
+            <div class="info-item">
+              <label>Phone Number</label>
+              <input type="tel" class="edit-input" id="addEmpPhone" required>
+            </div>
+            <div class="info-item">
+              <label>Email</label>
+              <input type="email" class="edit-input" id="addEmpEmail" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <h3 class="section-title">Employment Details</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Job Title</label>
+              <input type="text" class="edit-input" id="addEmpJob" required>
+            </div>
+            <div class="info-item">
+              <label>Department</label>
+              <select class="edit-select" id="addEmpDept" required>
+                <option value="ADMIN">ADMIN</option>
+                <option value="IT">IT</option>
+                <option value="HR">HR</option>
+              </select>
+            </div>
+            <div class="info-item">
+              <label>Organization</label>
+              <select class="edit-select" id="addEmpOrg" required>
+                <option value="RAHYO">RAHYO</option>
+                <option value="HHI">HHI</option>
+              </select>
+            </div>
+            <div class="info-item">
+              <label>Hire Date</label>
+              <input type="date" class="edit-input" id="addEmpHire" required>
+            </div>
+            <div class="info-item">
+              <label>Status</label>
+              <select class="edit-select" id="addEmpStatus" required>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-save" id="addEmployeeBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+          Add Employee
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap-container">
+    <h2>Employee Details</h2>
+
+    <!-- Filter controls -->
+    <div class="filter-container">
+      <div class="filter-controls">
+        <select id="filterDepartment">
+          <option value="">All Departments</option>
+          <option value="ADMIN">ADMIN</option>
+          <option value="IT">IT</option>
+          <option value="HR">HR</option>
+        </select>
+
+        <select id="filterJob">
+          <option value="">All Job Titles</option>
+          <option value="HR Officer">HR Officer</option>
+          <option value="Software Developer">Software Developer</option>
+          <option value="Administrator">Administrator</option>
+        </select>
+
+        <select id="filterStatus">
+          <option value="">All Status</option>
+          <option value="Active">Active</option>
+          <option value="Inactive">Inactive</option>
+        </select>
+
+        <select id="filterHireDate">
+          <option value="">All Hire Dates</option>
+          <option value="2021">2021</option>
+          <option value="2022">2022</option>
+          <option value="2023">2023</option>
+        </select>
+      </div>
+      
+      <button class="add-employee-btn" id="openAddEmployeeModal">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        Add Employee
+      </button>
+    </div>
+
+    <!-- Employee table -->
+    <table id="employeeTable" class="display">
+      <thead>
+        <tr>
+          <th>Photo</th>
+          <th>Name</th>
+          <th>Phone Number</th>
+          <th>Job Title</th>
+          <th>Department</th>
+          <th>Organization</th>
+          <th>Hire Date</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Data will be populated from Firebase -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDun5JjLLS1ooi2lV4og5ykH9sq6ATIWs0",
+      authDomain: "hhi-hrms.firebaseapp.com",
+      databaseURL: "https://hhi-hrms-default-rtdb.firebaseio.com",
+      projectId: "hhi-hrms",
+      storageBucket: "hhi-hrms.firebasestorage.app",
+      messagingSenderId: "478227639599",
+      appId: "1:478227639599:web:2090cc4389b34fd5e545da",
+      measurementId: "G-5YT8H6G8BY"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const auth = firebase.auth();
+    const storage = firebase.storage();
+    
+    // Global variables
+    let currentEmployeeId = null;
+    let employeesTable;
+    let selectedPhotoFile = null;
+    
+    // Load sidebar content
+    document.addEventListener('DOMContentLoaded', function() {
+      fetch('../sidebar/sidebar.html')
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById('sidebar-container').innerHTML = data;
+        })
+        .catch(error => console.error('Error loading sidebar:', error));
+
+      // Initialize DataTable
+      employeesTable = $('#employeeTable').DataTable({
+        columns: [
+          { 
+            data: 'photoUrl',
+            render: function(data, type, row) {
+              if (data) {
+                return `<img src="${data}" class="employee-thumbnail" alt="Employee Photo" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">`;
+              } else {
+                return `<div class="employee-thumbnail-placeholder" style="width: 40px; height: 40px; border-radius: 50%; background-color: #f0f0f0; display: flex; align-items: center; justify-content: center;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#888" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" />
+                    <path d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z" />
+                  </svg>
+                </div>`;
+              }
+            }
+          },
+          { data: 'name' },
+          { data: 'phone' },
+          { data: 'job' },
+          { data: 'department' },
+          { data: 'organization' },
+          { data: 'hireDate' },
+          { 
+            data: 'status',
+            render: function(data, type, row) {
+              const statusClass = data === 'Active' ? 'status-active' : 'status-inactive';
+              return `<span class="${statusClass}">${data}</span>`;
+            }
+          },
+          { 
+            data: null,
+            render: function(data, type, row) {
+              return `
+                <button class="edit-btn" data-id="${row.id}">Edit</button>
+                <button class="delete-btn" data-id="${row.id}">Delete</button>
+                <button class="view-btn" data-id="${row.id}">View</button>
+              `;
+            }
+          }
+        ]
+      });
+
+      // Load employees from Firebase
+      loadEmployees();
+      
+      // Filter handlers
+      $('#filterDepartment').on('change', function() {
+        employeesTable.column(4).search(this.value).draw();
+      });
+
+      $('#filterJob').on('change', function() {
+        employeesTable.column(3).search(this.value).draw();
+      });
+
+      $('#filterStatus').on('change', function() {
+        employeesTable.column(7).search(this.value).draw();
+      });
+
+      $('#filterHireDate').on('change', function() {
+        employeesTable.column(6).search(this.value).draw();
+      });
+      
+      // Add employee button
+      document.getElementById('openAddEmployeeModal').addEventListener('click', function() {
+        document.getElementById('addEmployeeModal').style.display = 'flex';
+        selectedPhotoFile = null;
+      });
+      
+      // Save employee button
+      document.getElementById('addEmployeeBtn').addEventListener('click', addEmployee);
+      
+      // Save changes button
+      document.getElementById('saveEmployeeBtn').addEventListener('click', saveEmployeeChanges);
+      
+      // Photo upload for add employee
+      document.getElementById('addEmpPhotoUpload').addEventListener('change', function(e) {
+        handlePhotoUpload(e, 'addEmpPictureContainer');
+      });
+      
+      // Photo upload for edit employee
+      document.getElementById('editEmpPhotoUpload').addEventListener('change', function(e) {
+        handlePhotoUpload(e, 'editEmpPictureContainer');
+      });
+    });
+    
+    // Handle photo upload
+    function handlePhotoUpload(event, containerId) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      if (!file.type.match('image.*')) {
+        Swal.fire({
+          title: 'Error!',
+          text: 'Please select an image file',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+        return;
+      }
+      
+      if (file.size > 2 * 1024 * 1024) { // 2MB limit
+        Swal.fire({
+          title: 'Error!',
+          text: 'Image size should be less than 2MB',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+        return;
+      }
+      
+      selectedPhotoFile = file;
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = `<img src="${e.target.result}" class="profile-picture" alt="Employee Picture">`;
+      };
+      reader.readAsDataURL(file);
+    }
+    
+    // Load employees from Firebase
+    function loadEmployees() {
+      const employeesRef = database.ref('employees');
+      
+      employeesRef.on('value', (snapshot) => {
+        const employees = [];
+        snapshot.forEach((childSnapshot) => {
+          const employee = childSnapshot.val();
+          employee.id = childSnapshot.key;
+          employees.push(employee);
+        });
+        
+        employeesTable.clear().rows.add(employees).draw();
+        
+        // Update filter dropdowns
+        updateFilterDropdowns(employees);
+      });
+    }
+    
+    // Update filter dropdowns with unique values
+    function updateFilterDropdowns(employees) {
+      // Update job titles
+      const jobTitles = [...new Set(employees.map(emp => emp.job))].sort();
+      const jobSelect = document.getElementById('filterJob');
+      jobSelect.innerHTML = '<option value="">All Job Titles</option>';
+      jobTitles.forEach(job => {
+        jobSelect.innerHTML += `<option value="${job}">${job}</option>`;
+      });
+      
+      // Update hire years
+      const hireYears = [...new Set(employees.map(emp => emp.hireDate.substring(0, 4)))].sort();
+      const hireSelect = document.getElementById('filterHireDate');
+      hireSelect.innerHTML = '<option value="">All Hire Dates</option>';
+      hireYears.forEach(year => {
+        hireSelect.innerHTML += `<option value="${year}">${year}</option>`;
+      });
+    }
+    
+    // View employee details
+    function showEmployeeDetails(employee) {
+      document.getElementById('empName').textContent = employee.name || 'N/A';
+      document.getElementById('empDob').textContent = employee.dob || 'N/A';
+      document.getElementById('empAddress').textContent = employee.address || 'N/A';
+      document.getElementById('empPhone').textContent = employee.phone || 'N/A';
+      document.getElementById('empEmail').textContent = employee.email || 'N/A';
+      document.getElementById('empJob').textContent = employee.job || 'N/A';
+      document.getElementById('empDept').textContent = employee.department || 'N/A';
+      document.getElementById('empOrg').textContent = employee.organization || 'N/A';
+      document.getElementById('empHire').textContent = employee.hireDate || 'N/A';
+      
+      const statusElement = document.getElementById('empStatus');
+      statusElement.textContent = employee.status || 'N/A';
+      statusElement.className = 'info-value ' + (employee.status === 'Active' ? 'status-active' : 'status-inactive');
+      
+      // Set employee picture
+      const pictureContainer = document.getElementById('empPictureContainer');
+      if (employee.photoUrl) {
+        pictureContainer.innerHTML = `<img src="${employee.photoUrl}" class="profile-picture" alt="Employee Picture">`;
+      } else {
+        pictureContainer.innerHTML = `
+          <div class="profile-picture-placeholder">
+            <svg width="50" height="50" viewBox="0 0 24 24" fill="#888" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" />
+              <path d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z" />
+            </svg>
+          </div>
+        `;
+      }
+      
+      document.getElementById('employeeModal').style.display = 'flex';
+    }
+    
+    // Open edit modal
+    function openEditModal(employee) {
+      currentEmployeeId = employee.id;
+      selectedPhotoFile = null;
+      
+      document.getElementById('editEmpName').value = employee.name || '';
+      document.getElementById('editEmpDob').value = employee.dob || '';
+      document.getElementById('editEmpAddress').value = employee.address || '';
+      document.getElementById('editEmpPhone').value = employee.phone || '';
+      document.getElementById('editEmpEmail').value = employee.email || '';
+      document.getElementById('editEmpJob').value = employee.job || '';
+      document.getElementById('editEmpDept').value = employee.department || 'ADMIN';
+      document.getElementById('editEmpOrg').value = employee.organization || 'RAHYO';
+      document.getElementById('editEmpHire').value = employee.hireDate || '';
+      document.getElementById('editEmpStatus').value = employee.status || 'Active';
+      
+      // Set employee picture
+      const pictureContainer = document.getElementById('editEmpPictureContainer');
+      if (employee.photoUrl) {
+        pictureContainer.innerHTML = `<img src="${employee.photoUrl}" class="profile-picture" alt="Employee Picture">`;
+      } else {
+        pictureContainer.innerHTML = `
+          <div class="profile-picture-placeholder">
+            <svg width="50" height="50" viewBox="0 0 24 24" fill="#888" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" />
+              <path d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z" />
+            </svg>
+          </div>
+        `;
+      }
+      
+      document.getElementById('editEmployeeModal').style.display = 'flex';
+    }
+    
+    // Save employee changes
+    function saveEmployeeChanges() {
+      if (!currentEmployeeId) return;
+      
+      // Show loading indicator
+      const saveBtn = document.getElementById('saveEmployeeBtn');
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="animate-spin">
+          <path d="M12 2V6M12 18V22M6 12H2M22 12H18M19.0784 19.0784L16.25 16.25M19.0784 4.99994L16.25 7.82837M4.92157 19.0784L7.75 16.25M4.92157 4.99994L7.75 7.82837" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Saving...
+      `;
+      
+      // Get updated values
+      const updatedEmployee = {
+        name: document.getElementById('editEmpName').value,
+        dob: document.getElementById('editEmpDob').value,
+        address: document.getElementById('editEmpAddress').value,
+        phone: document.getElementById('editEmpPhone').value,
+        email: document.getElementById('editEmpEmail').value,
+        job: document.getElementById('editEmpJob').value,
+        department: document.getElementById('editEmpDept').value,
+        organization: document.getElementById('editEmpOrg').value,
+        hireDate: document.getElementById('editEmpHire').value,
+        status: document.getElementById('editEmpStatus').value,
+        updatedAt: firebase.database.ServerValue.TIMESTAMP
+      };
+      
+      // Function to update employee data after photo upload (if any)
+      const updateEmployeeData = (photoUrl = null) => {
+        if (photoUrl) {
+          updatedEmployee.photoUrl = photoUrl;
+        }
+        
+        // Update in Firebase
+        database.ref('employees/' + currentEmployeeId).update(updatedEmployee)
+          .then(() => {
+            Swal.fire({
+              title: 'Success!',
+              text: 'Employee details updated successfully',
+              icon: 'success',
+              confirmButtonText: 'OK'
+            }).then(() => {
+              document.getElementById('editEmployeeModal').style.display = 'none';
+              saveBtn.disabled = false;
+              saveBtn.innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M19 21H5C3.89543 21 3 20.1046 3 19V5C3 3.89543 3.89543 3 5 3H16.1716C16.702 3 17.2107 3.21071 17.5858 3.58579L20.4142 6.41421C20.7893 6.78929 21 7.29799 21 7.82843V19C21 20.1046 20.1046 21 19 21Z" stroke="currentColor" stroke-width="2" />
+                  <path d="M17 21V13H7V21" stroke="currentColor" stroke-width="2" />
+                  <path d="M7 3V8H15" stroke="currentColor" stroke-width="2" />
+                </svg>
+                Save Changes
+              `;
+            });
+          })
+          .catch(error => {
+            Swal.fire({
+              title: 'Error!',
+              text: 'Failed to update employee: ' + error.message,
+              icon: 'error',
+              confirmButtonText: 'OK'
+            });
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = `
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 21H5C3.89543 21 3 20.1046 3 19V5C3 3.89543 3.89543 3 5 3H16.1716C16.702 3 17.2107 3.21071 17.5858 3.58579L20.4142 6.41421C20.7893 6.78929 21 7.29799 21 7.82843V19C21 20.1046 20.1046 21 19 21Z" stroke="currentColor" stroke-width="2" />
+                <path d="M17 21V13H7V21" stroke="currentColor" stroke-width="2" />
+                <path d="M7 3V8H15" stroke="currentColor" stroke-width="2" />
+              </svg>
+              Save Changes
+            `;
+          });
+      };
+      
+      // Upload photo if selected
+      if (selectedPhotoFile) {
+        const storageRef = storage.ref();
+        const photoRef = storageRef.child(`employee_photos/${currentEmployeeId}/${selectedPhotoFile.name}`);
+        
+        photoRef.put(selectedPhotoFile).then((snapshot) => {
+          return snapshot.ref.getDownloadURL();
+        }).then((downloadURL) => {
+          updateEmployeeData(downloadURL);
+        }).catch((error) => {
+          Swal.fire({
+            title: 'Error!',
+            text: 'Failed to upload photo: ' + error.message,
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+          saveBtn.disabled = false;
+          saveBtn.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M19 21H5C3.89543 21 3 20.1046 3 19V5C3 3.89543 3.89543 3 5 3H16.1716C16.702 3 17.2107 3.21071 17.5858 3.58579L20.4142 6.41421C20.7893 6.78929 21 7.29799 21 7.82843V19C21 20.1046 20.1046 21 19 21Z" stroke="currentColor" stroke-width="2" />
+              <path d="M17 21V13H7V21" stroke="currentColor" stroke-width="2" />
+              <path d="M7 3V8H15" stroke="currentColor" stroke-width="2" />
+            </svg>
+            Save Changes
+          `;
+        });
+      } else {
+        updateEmployeeData();
+      }
+    }
+    
+    // Add new employee
+    function addEmployee() {
+      const newEmployee = {
+        name: document.getElementById('addEmpName').value,
+        dob: document.getElementById('addEmpDob').value,
+        address: document.getElementById('addEmpAddress').value,
+        phone: document.getElementById('addEmpPhone').value,
+        email: document.getElementById('addEmpEmail').value,
+        job: document.getElementById('addEmpJob').value,
+        department: document.getElementById('addEmpDept').value,
+        organization: document.getElementById('addEmpOrg').value,
+        hireDate: document.getElementById('addEmpHire').value,
+        status: document.getElementById('addEmpStatus').value,
+        createdAt: firebase.database.ServerValue.TIMESTAMP,
+        updatedAt: firebase.database.ServerValue.TIMESTAMP
+      };
+      
+      // Validate required fields
+      if (!newEmployee.name || !newEmployee.email || !newEmployee.job) {
+        Swal.fire({
+          title: 'Error!',
+          text: 'Please fill in all required fields',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+        return;
+      }
+      
+      // Show loading indicator
+      const addBtn = document.getElementById('addEmployeeBtn');
+      addBtn.disabled = true;
+      addBtn.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="animate-spin">
+          <path d="M12 2V6M12 18V22M6 12H2M22 12H18M19.0784 19.0784L16.25 16.25M19.0784 4.99994L16.25 7.82837M4.92157 19.0784L7.75 16.25M4.92157 4.99994L7.75 7.82837" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Adding...
+      `;
+      
+      // Function to add employee after photo upload (if any)
+      const addEmployeeData = (photoUrl = null) => {
+        if (photoUrl) {
+          newEmployee.photoUrl = photoUrl;
+        }
+        
+        // Add to Firebase
+        const newEmployeeRef = database.ref('employees').push();
+        newEmployeeRef.set(newEmployee)
+          .then(() => {
+            Swal.fire({
+              title: 'Success!',
+              text: 'Employee added successfully',
+              icon: 'success',
+              confirmButtonText: 'OK'
+            }).then(() => {
+              // Clear form
+              document.getElementById('addEmpName').value = '';
+              document.getElementById('addEmpDob').value = '';
+              document.getElementById('addEmpAddress').value = '';
+              document.getElementById('addEmpPhone').value = '';
+              document.getElementById('addEmpEmail').value = '';
+              document.getElementById('addEmpJob').value = '';
+              document.getElementById('addEmpDept').value = 'ADMIN';
+              document.getElementById('addEmpOrg').value = 'RAHYO';
+              document.getElementById('addEmpHire').value = '';
+              document.getElementById('addEmpStatus').value = 'Active';
+              
+              // Reset photo
+              document.getElementById('addEmpPictureContainer').innerHTML = `
+                <div class="profile-picture-placeholder">
+                  <svg width="50" height="50" viewBox="0 0 24 24" fill="#888" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" />
+                    <path d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z" />
+                  </svg>
+                </div>
+              `;
+              
+              document.getElementById('addEmployeeModal').style.display = 'none';
+              addBtn.disabled = false;
+              addBtn.innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+                Add Employee
+              `;
+            });
+          })
+          .catch(error => {
+            Swal.fire({
+              title: 'Error!',
+              text: 'Failed to add employee: ' + error.message,
+              icon: 'error',
+              confirmButtonText: 'OK'
+            });
+            addBtn.disabled = false;
+            addBtn.innerHTML = `
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+              Add Employee
+            `;
+          });
+      };
+      
+      // Upload photo if selected
+      if (selectedPhotoFile) {
+        const storageRef = storage.ref();
+        const employeeId = newEmployeeRef.key;
+        const photoRef = storageRef.child(`employee_photos/${employeeId}/${selectedPhotoFile.name}`);
+        
+        photoRef.put(selectedPhotoFile).then((snapshot) => {
+          return snapshot.ref.getDownloadURL();
+        }).then((downloadURL) => {
+          addEmployeeData(downloadURL);
+        }).catch((error) => {
+          Swal.fire({
+            title: 'Error!',
+            text: 'Failed to upload photo: ' + error.message,
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+          addBtn.disabled = false;
+          addBtn.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            Add Employee
+          `;
+        });
+      } else {
+        addEmployeeData();
+      }
+    }
+    
+    // Print edit form
+    function printEditForm() {
+      const printWindow = window.open('', '', 'width=900,height=700');
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Print Employee Edit Form</title>
+            <style>
+              body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                padding: 40px;
+                background-color: #f9f9f9;
+                color: #333;
+              }
+              .print-header {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                margin-bottom: 30px;
+                border-bottom: 2px solid #444;
+                padding-bottom: 10px;
+              }
+              .print-header img {
+                width: 60px;
+                height: 60px;
+                object-fit: contain;
+              }
+              .print-header h1 {
+                font-size: 24px;
+                margin: 0;
+                color: #2c3e50;
+              }
+              h2, h3 {
+                margin-bottom: 12px;
+                color: #34495e;
+              }
+              .info-section {
+                margin-bottom: 30px;
+              }
+              .info-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px 25px;
+                background: #fff;
+                padding: 20px;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+              }
+              .info-item {
+                padding-bottom: 10px;
+                border-bottom: 1px dashed #ddd;
+              }
+              label {
+                font-weight: bold;
+                display: block;
+                font-size: 14px;
+                color: #555;
+              }
+              .edit-input, .edit-select {
+                margin-top: 4px;
+                font-size: 16px;
+                color: #111;
+                width: 100%;
+                padding: 8px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+              }
+              @media print {
+                @page {
+                  margin: 0;
+                  size: auto;
+                }
+              }
+            </style>
+          </head>
+          <body>
+            <div class="print-header">
+              <img src="../../images/assets/logo.png" alt="Logo">
+              <h1>Hyacinth HRMS - Employee Edit Form</h1>
+            </div>
+            ${document.querySelector('#editEmployeeModal .modal-body').innerHTML}
+          </body>
+        </html>
+      `);
+
+      printWindow.document.close();
+      printWindow.focus();
+      setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+      }, 500);
+    }
+
+    // Close modal handlers
+    document.addEventListener('click', function(event) {
+      if (event.target.classList.contains('close-modal') || 
+          event.target === document.getElementById('employeeModal') ||
+          event.target === document.getElementById('editEmployeeModal') ||
+          event.target === document.getElementById('addEmployeeModal')) {
+        document.getElementById('employeeModal').style.display = 'none';
+        document.getElementById('editEmployeeModal').style.display = 'none';
+        document.getElementById('addEmployeeModal').style.display = 'none';
+      }
+    });
+
+    // Handle table button clicks
+    document.addEventListener('click', function(event) {
+      // View button
+      if (event.target.classList.contains('view-btn')) {
+        const employeeId = event.target.getAttribute('data-id');
+        database.ref('employees/' + employeeId).once('value')
+          .then(snapshot => {
+            const employee = snapshot.val();
+            employee.id = snapshot.key;
+            showEmployeeDetails(employee);
+          });
+      }
+      
+      // Edit button
+      if (event.target.classList.contains('edit-btn')) {
+        const employeeId = event.target.getAttribute('data-id');
+        database.ref('employees/' + employeeId).once('value')
+          .then(snapshot => {
+            const employee = snapshot.val();
+            employee.id = snapshot.key;
+            openEditModal(employee);
+          });
+      }
+      
+      // Delete button
+      if (event.target.classList.contains('delete-btn')) {
+        const employeeId = event.target.getAttribute('data-id');
+        
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "This action cannot be undone!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#e3342f',
+          cancelButtonColor: '#6c757d',
+          confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Delete employee photo if exists
+            const storageRef = storage.ref();
+            const photoRef = storageRef.child(`employee_photos/${employeeId}`);
+            
+            // Delete the folder and all files in it
+            photoRef.listAll().then((dirList) => {
+              const deletePromises = dirList.items.map((item) => item.delete());
+              return Promise.all(deletePromises);
+            }).catch(() => {
+              // If no photo exists, just continue
+              return Promise.resolve();
+            }).then(() => {
+              // Delete employee record
+              return database.ref('employees/' + employeeId).remove();
+            }).then(() => {
+              Swal.fire(
+                'Deleted!',
+                'Employee has been deleted.',
+                'success'
+              );
+            }).catch(error => {
+              Swal.fire(
+                'Error!',
+                'Failed to delete employee: ' + error.message,
+                'error'
+              );
+            });
+          }
+        });
+      }
+    });
+    
+    // Print employee profile
+    document.querySelector('#employeeModal .btn-print').addEventListener('click', function() {
+      const modalBody = document.querySelector('#employeeModal .modal-body').innerHTML;
+
+      const printWindow = window.open('', '', 'width=900,height=700');
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Print Employee Profile</title>
+            <style>
+              body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                padding: 40px;
+                background-color: #f9f9f9;
+                color: #333;
+              }
+
+              .print-header {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                margin-bottom: 30px;
+                border-bottom: 2px solid #444;
+                padding-bottom: 10px;
+              }
+
+              .print-header img {
+                width: 60px;
+                height: 60px;
+                object-fit: contain;
+              }
+
+              .print-header h1 {
+                font-size: 24px;
+                margin: 0;
+                color: #2c3e50;
+              }
+
+              h2, h3 {
+                margin-bottom: 12px;
+                color: #34495e;
+              }
+
+              .info-section {
+                margin-bottom: 30px;
+              }
+
+              .info-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px 25px;
+                background: #fff;
+                padding: 20px;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+              }
+
+              .info-item {
+                padding-bottom: 10px;
+                border-bottom: 1px dashed #ddd;
+              }
+
+              label {
+                font-weight: bold;
+                display: block;
+                font-size: 14px;
+                color: #555;
+              }
+
+              .info-value {
+                margin-top: 4px;
+                font-size: 16px;
+                color: #111;
+              }
+
+              .status-active {
+                color: green;
+                font-weight: bold;
+              }
+
+              .status-inactive {
+                color: red;
+                font-weight: bold;
+              }
+
+              .profile-picture {
+                width: 150px;
+                height: 150px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 4px solid #fff;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                margin-bottom: 15px;
+              }
+
+              .profile-picture-placeholder {
+                width: 150px;
+                height: 150px;
+                border-radius: 50%;
+                background-color: #f0f0f0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #888;
+                font-size: 14px;
+                border: 4px solid #fff;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                margin-bottom: 15px;
+              }
+
+              @media print {
+                @page {
+                  margin: 0;
+                  size: auto;
+                }
+              }
+            </style>
+          </head>
+          <body>
+            <div class="print-header">
+              <img src="../../images/assets/logo.png" alt="Logo">
+              <h1>Hyacinth HRMS - Employee Profile</h1>
+            </div>
+
+            ${modalBody}
+          </body>
+        </html>
+      `);
+
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close();
+    });
+  </script>
+
+  <script src="../../js/img.js"></script>
+</body>
+</html>

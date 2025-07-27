@@ -1,0 +1,230 @@
+/* ====== Stats Section ====== */
+
+.stats-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-top: 30px;
+  align-items: flex-start;
+}
+
+/* Stat Card Base */
+.stat-card {
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-align: center;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card .stat-icon {
+  font-size: 48px;
+  margin-bottom: 15px;
+}
+
+.stat-card h3 {
+  margin: 10px 0 5px;
+  font-size: 20px;
+}
+
+/* Total Employees */
+.col-large {
+  flex: 0 0 280px;
+}
+
+.stat-card.large {
+  height: 400px;
+  background: linear-gradient(to right, #801100, #242424);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Organizations */
+.col-orgs {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+  margin-bottom: 20px;
+}
+
+.stat-card.org {
+  height: 180px;
+  background: linear-gradient(to right, #ffffff, #fbeaea);
+  border: 2px solid #801100;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Department Cards */
+.col-departments {
+  flex: 1;
+}
+
+.departments-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.dept-card {
+  background: #fffdfd;
+  border: 2px solid #1a1a2e;
+  border-radius: 10px;
+  padding: 20px;
+  font-weight: 500;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dept-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  background-color: #f4f4f4;
+}
+
+/* Count Text */
+.stat-card .count {
+  font-size: 20px;
+  color: #801100;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .stats-container {
+    flex-direction: column;
+  }
+
+  .col-large,
+  .col-orgs,
+  .col-departments {
+    width: 100%;
+  }
+
+  .departments-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+}
+
+/* ====== Recent Activities Section ====== */
+
+.recent-activities {
+  background-color: #ffffff;
+  border-left: 6px solid #801100;
+  border-radius: 20px;
+  padding: 25px 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.recent-activities h2 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 10px;
+}
+
+.activity-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.activity-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  font-size: 15px;
+  color: #444;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.activity-list li::before {
+  content: "•";
+  color: #801100;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.activity-list li:last-child {
+  border-bottom: none;
+}
+
+.todo-list {
+  background: white;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.todo-list h2 {
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.todo-items {
+  list-style: none;
+  padding: 0;
+}
+
+.todo-items li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.todo-checkbox {
+  margin-right: 10px;
+  transform: scale(1.2);
+}
+
+.todo-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #f8f8f8;
+  transition: all 0.3s ease;
+}
+
+.todo-input:focus {
+  outline: none;
+  border-color: #801100;
+  background-color: white;
+}
+
+.activities-todo-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 30px;
+  flex-wrap: wrap;
+  margin-top: 40px;
+}
+
+.activities-todo-container .recent-activities,
+.activities-todo-container .todo-list {
+  width: 48%;
+  min-width: 300px;
+}
+
+.activities-todo-container {
+  margin: 40px 0; /* top and bottom spacing */
+}

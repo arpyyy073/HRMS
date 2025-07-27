@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sidebar</title>
+    <link rel="stylesheet" href="../../style/sidebar.css" />
+    <link rel="icon" href="../../images/assets/logo.png" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+    />
+  </head>
+  <body>
+    <div class="sidebar">
+  <div class="logo-container">
+    <img src="/images/assets/logo.png" alt="Logo">
+  </div>
+
+  <a href="/templates/dashboard/dashboard.html" data-label="Dashboard">
+    <span class="material-symbols-outlined">dashboard</span>
+  </a>
+  <a href="/templates/employee/employee.html" data-label="Employees">
+    <span class="material-symbols-outlined">group</span>
+  </a>
+  <a href="#" data-label="Departments">
+    <span class="material-symbols-outlined">business</span>
+  </a>
+  <a href="#" data-label="Settings">
+    <span class="material-symbols-outlined">settings</span>
+  </a>
+
+  <div class="logout-section">
+    <a href="/templates/auth/login.html" class="logout-link" data-label="Logout">
+      <span class="material-symbols-outlined">logout</span>
+    </a>
+  </div>
+</div>
+    </div>
+  </body>
+</html>

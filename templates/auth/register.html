@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - HR Management System</title>
+  <link rel="stylesheet" href="/style/register.css"> <!-- Changed to absolute path -->
+  <link rel="icon" href="/images/assets/logo.png"> <!-- Changed to absolute path -->
+  <!-- Firebase SDK v9 (newer version) -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+</head>
+
+<body>
+  <header></header>
+
+  <div class="register-container">
+    <img src="/images/assets/logo.png" alt="Logo"> <!-- Changed to absolute path -->
+    <h2><span>Hyacinth</span> - Register</h2>
+
+    <form onsubmit="return register(event)">
+      <div class="email-container">
+        <p>Full Name</p>
+        <input type="text" id="fullName" placeholder="Enter your full name" required>
+      </div>
+
+      <div class="email-container">
+        <p>Email</p>
+        <input type="email" id="email" placeholder="Enter your email" required>
+      </div>
+
+      <div class="password-container">
+        <p>Password</p>
+        <input type="password" id="password" placeholder="Enter password (min 6 characters)" required minlength="6">
+      </div>
+
+      <div class="password-container">
+        <p>Confirm Password</p>
+        <input type="password" id="confirmPassword" placeholder="Re-enter password" required minlength="6">
+      </div>
+
+      <div class="button-container">
+        <button type="submit" id="registerBtn">Register</button>
+        <p>Already have an account? <a href="/templates/auth/login.html"><span>Login</span></a></p>
+      </div>
+    </form>
+    <p id="error-message" style="color: red; text-align: center; margin-top: 10px;"></p>
+    <p id="success-message" style="color: green; text-align: center; margin-top: 10px;"></p>
+  </div>
+
+  <script>
+    // Your Firebase configuration
+    const firebaseConfig = {
+  apiKey: "AIzaSyDun5JjLLS1ooi2lV4og5ykH9sq6ATIWs0", // Must be correct
+  authDomain: "hhi-hrms.firebaseapp.com",
+  projectId: "hhi-hrms",
+  storageBucket: "hhi-hrms.firebasestorage.app",
+  messagingSenderId: "478227639599",
+  appId: "1:478227639599:web:2090cc4389b34fd5e545da",
+  measurementId: "G-5YT8H6G8BY"
+};
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth(app);
+
+    async function register(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const fullName = document.getElementById('fullName').value;
+      const errorElement = document.getElementById('error-message');
+      const successElement = document.getElementById('success-message');
+      const registerBtn = document.getElementById('registerBtn');
+      
+      // Reset messages
+      errorElement.textContent = '';
+      successElement.textContent = '';
+      registerBtn.disabled = true;
+      registerBtn.textContent = 'Creating account...';
+      
+      try {
+        // Validate passwords match
+        if (password !== confirmPassword) {
+          throw new Error('Passwords do not match!');
+        }
+        
+        if (password.length < 6) {
+          throw new Error('Password must be at least 6 characters');
+        }
+        
+        // Create user
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+        
+        // Update profile with display name
+        await user.updateProfile({
+          displayName: fullName
+        });
+        
+        // Send email verification (recommended)
+        await user.sendEmailVerification();
+        
+        successElement.textContent = 'Account created successfully! Please check your email for verification.';
+        registerBtn.textContent = 'Registration Complete!';
+        
+        // Redirect to login after 3 seconds
+        setTimeout(() => {
+          window.location.href = "/templates/auth/login.html";
+        }, 3000);
+        
+      } catch (error) {
+        let errorMessage = error.message;
+        
+        // User-friendly error messages
+        switch(error.code) {
+          case 'auth/email-already-in-use':
+            errorMessage = 'This email is already registered';
+            break;
+          case 'auth/invalid-email':
+            errorMessage = 'Please enter a valid email address';
+            break;
+          case 'auth/weak-password':
+            errorMessage = 'Password should be at least 6 characters';
+            break;
+          case 'auth/network-request-failed':
+            errorMessage = 'Network error. Please check your internet connection';
+            break;
+        }
+        
+        errorElement.textContent = errorMessage;
+        registerBtn.disabled = false;
+        registerBtn.textContent = 'Register';
+      }
+      
+      return false;
+    }
+  </script>
+</body>
+</html>
