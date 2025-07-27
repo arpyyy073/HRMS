@@ -228,7 +228,6 @@
 .activities-todo-container {
   margin: 40px 0; /* top and bottom spacing */
 }
-
 .modal {
   display: none;
   position: fixed;
@@ -237,40 +236,41 @@
   top: 0;
   width: 100%;
   height: 100%;
+  background-color: rgba(0,0,0,0.5);
   overflow: auto;
-  background-color: rgba(0,0,0,0.4);
 }
 
 .modal-content {
-  background-color: #fff;
-  margin: 10% auto;
+  background: white;
+  margin: 8% auto;
   padding: 20px;
-  border-radius: 10px;
-  width: 60%;
-  max-width: 400px;
+  width: 80%;
+  max-width: 600px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #00000033;
   text-align: center;
 }
 
 .close {
-  color: #aaa;
   float: right;
   font-size: 24px;
   font-weight: bold;
+  color: #888;
   cursor: pointer;
 }
 
-#employee-table {
+.employee-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 15px;
+  margin-top: 20px;
 }
 
-#employee-table th,
-#employee-table td {
+.employee-table th, .employee-table td {
+  border: 1px solid #ccc;
   padding: 10px;
   text-align: left;
 }
 
-#employee-table tr:nth-child(even) {
-  background-color: #f2f2f2;
+.employee-table tr:nth-child(even) {
+  background-color: #f9f9f9;
 }

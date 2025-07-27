@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - HR Management System</title>
-  <link rel="stylesheet" href="/style/login.css">
+  <link rel="stylesheet" href="../../style/login.css">
   <link rel="icon" href="/images/assets/logo.png">
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
@@ -59,11 +59,17 @@
       
       try {
         const userCredential = await auth.signInWithEmailAndPassword(email, password);
-        window.location.href = '/templates/dashboard/dashboard.html';
+        window.location.href = '/HRMS/templates/dashboard/dashboard.html';
       } catch (error) {
         document.getElementById('error-message').textContent = error.message;
       }
     }
+    
+    firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+      window.location.replace("/HRMS/templates/dashboard/dashboard.html");
+    }
+  });
   </script>
 </body>
 </html>

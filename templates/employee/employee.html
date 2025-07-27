@@ -553,6 +553,8 @@
   </div>
 
   <script>
+
+
     // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDun5JjLLS1ooi2lV4og5ykH9sq6ATIWs0",
@@ -1363,6 +1365,11 @@
       printWindow.print();
       printWindow.close();
     });
+    firebase.auth().onAuthStateChanged((user) => {
+    if (!user) {
+      window.location.replace("/templates/auth/login.html");
+    }
+  });
   </script>
 
   <script src="../../js/img.js"></script>
