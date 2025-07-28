@@ -36,7 +36,7 @@
   </div>
 
   <script>
-    // Firebase configuration
+
     const firebaseConfig = {
       apiKey: "AIzaSyDun5JjLLS1ooi2lV4og5ykH9sq6ATIWs0",
       authDomain: "hhi-hrms.firebaseapp.com",
@@ -47,18 +47,18 @@
       measurementId: "G-5YT8H6G8BY"
     };
 
-    // Initialize Firebase
+
     const app = firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    // Cleanup if logging out or forced logout
+
     if (window.location.search.includes('logout') || window.location.search.includes('force')) {
       auth.signOut().catch(() => {});
       localStorage.clear();
       sessionStorage.clear();
     }
 
-    // Login function with SweetAlert error handling
+
     async function login(e) {
       e.preventDefault();
       const email = document.getElementById('email').value;
@@ -85,8 +85,6 @@
         });
       }
     }
-
-    // Redirect already logged-in users
     auth.onAuthStateChanged((user) => {
       if (user) {
         window.location.replace("/HRMS/templates/dashboard/dashboard.html");
