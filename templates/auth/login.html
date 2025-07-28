@@ -1,26 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login - HR Management System</title>
-  <link rel="stylesheet" href="../../style/login.css">
-  <link rel="icon" href="/images/assets/logo.png">
+  <link rel="stylesheet" href="../../style/login.css" />
+  <link rel="icon" href="/images/assets/logo.png" />
+  
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
   <div class="login-container">
-    <img src="../../images/assets/logo.png" alt="Company Logo">
+    <img src="../../images/assets/logo.png" alt="Company Logo" />
     <h2><span>Hyacinth</span> - HRMS</h2>
     <form onsubmit="return login(event)">
       <div class="email-container">
         <p>Email</p>
-        <input type="email" id="email" placeholder="Enter your email" required>
+        <input type="email" id="email" placeholder="Enter your email" required />
       </div>
       <div class="password-container">
         <p>Password</p>
-        <input type="password" id="password" placeholder="Enter Password" required>
+        <input type="password" id="password" placeholder="Enter Password" required />
         <p class="forgot"><a href="/HRMS/templates/auth/forgot-password.html">Forgot Password?</a></p>
       </div>
       <div class="button-container">
@@ -28,10 +33,10 @@
         <p>Don't have an account? <a href="/HRMS/templates/auth/register.html"><span>Register</span></a></p>
       </div>
     </form>
-    <div id="error-message"></div>
   </div>
 
   <script>
+    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDun5JjLLS1ooi2lV4og5ykH9sq6ATIWs0",
       authDomain: "hhi-hrms.firebaseapp.com",
@@ -42,34 +47,51 @@
       measurementId: "G-5YT8H6G8BY"
     };
 
+    // Initialize Firebase
     const app = firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    // Cleanup on login page load
+    // Cleanup if logging out or forced logout
     if (window.location.search.includes('logout') || window.location.search.includes('force')) {
       auth.signOut().catch(() => {});
       localStorage.clear();
       sessionStorage.clear();
     }
 
+    // Login function with SweetAlert error handling
     async function login(e) {
       e.preventDefault();
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
-      
+
       try {
         const userCredential = await auth.signInWithEmailAndPassword(email, password);
         window.location.href = '/HRMS/templates/dashboard/dashboard.html';
       } catch (error) {
-        document.getElementById('error-message').textContent = error.message;
+        let message = 'Login failed. Please try again.';
+        if (error.code === 'auth/user-not-found') {
+          message = 'You do not have an account. Please register first.';
+        } else if (error.code === 'auth/wrong-password') {
+          message = 'Incorrect password. Please try again.';
+        } else if (error.code === 'auth/invalid-email') {
+          message = 'The email address is not valid.';
+        }
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Login Failed',
+          text: message,
+          confirmButtonColor: '#d33'
+        });
       }
     }
-    
-    firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-      window.location.replace("/HRMS/templates/dashboard/dashboard.html");
-    }
-  });
+
+    // Redirect already logged-in users
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        window.location.replace("/HRMS/templates/dashboard/dashboard.html");
+      }
+    });
   </script>
 </body>
 </html>
