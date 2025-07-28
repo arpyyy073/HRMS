@@ -22,16 +22,16 @@ body {
 }
 
 .wrap-container {
-  margin-left: 90px;
+  margin-left: 70px;
   margin-top: 20px;
   margin-bottom: 20px;
   margin-right: 20px;
-  padding: 20px;
+  padding: 16px 20px 20px 20px;
   flex: 1;
   border-style: solid;
   background-color: #f8f8f8;
   min-height: calc(100vh - 40px);
-  border-radius: 20px;
+  border-radius: 8px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
   overflow-y: auto;
 
@@ -42,4 +42,25 @@ body {
 
 .wrap-container::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
+}
+
+.top-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #fff;
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.top-btn:hover {
+  background-color: #28a745;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }

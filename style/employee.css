@@ -1,137 +1,213 @@
 @import url(style.css);
+@import url(sidebar.css);
 
-/* Base Layout */
-body {
-  font-family: "Inter", sans-serif;
-  background-color: #f7f9fc;
-  margin: 0;
-  padding: 0;
+.employee-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: transparent;
+  padding: 8px 0;
+  border-bottom: 2px solid #ddd;
+  margin-top: 0;
+  margin-bottom: 16px;
 }
 
-.wrap-container {
-  margin-left: 80px; /* Match slim sidebar (70px + 10px gap) */
-  padding: 30px 40px;
-  background-color: #f8f8f8;
-  border-radius: 30px;
-  min-height: 100vh;
-  box-sizing: border-box;
+.top-btn:hover {
+  background-color: #28a745;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.wrap-container h2 {
-  text-align: center;
-  margin-bottom: 30px;
+.header-title h1 {
+  font-size: 18px;
   font-weight: 600;
   color: #333;
+  margin: 0;
 }
 
-/* DataTable Styling */
+.filter-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.filter-buttons select,
+.filter-buttons input[type="date"] {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  color: #333;
+  transition: all 0.3s ease;
+  min-width: 160px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.filter-buttons select:focus,
+.filter-buttons input[type="date"]:focus {
+  border-color: #801100;
+  background-color: #fff;
+  box-shadow: 0 0 0 2px rgba(128, 17, 0, 0.15);
+  outline: none;
+}
+
+/* Applicants Table Container */
+.data-table-container {
+  background-color: #ffffff;
+  padding: 25px 30px;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  max-height: 450px;
+  margin-top: 20px;
+  overflow-y: auto;
+}
+
+.data-table-container::-webkit-scrollbar {
+  width: 8px;
+}
+.data-table-container::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
+}
+.data-table-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Table Core */
+table#applicantTable,
 table.dataTable {
   width: 100%;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 10px;
   border-collapse: collapse;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-  overflow: hidden;
-}
-
-table.dataTable thead {
-  background-color: #f0f0f0;
-}
-
-table.dataTable th,
-table.dataTable td {
-  padding: 14px 15px;
-  text-align: center;
-  font-size: 14px;
+  font-size: 15px;
   color: #333;
 }
 
-table.dataTable th {
-  font-weight: 600;
+table#applicantTable thead,
+table.dataTable thead {
+  background-color: #801100;
+  color: #ffffff;
+  text-align: left;
 }
 
+table#applicantTable th,
+table#applicantTable td,
+table.dataTable th,
+table.dataTable td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+table#applicantTable thead th:first-child {
+  border-top-left-radius: 10px;
+}
+table#applicantTable thead th:last-child {
+  border-top-right-radius: 10px;
+}
+
+table#applicantTable th {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+table#applicantTable td {
+  font-size: 14px;
+}
+
+table#applicantTable tbody tr:hover,
 table.dataTable tbody tr:hover {
   background-color: #f9f9f9;
-  transition: background-color 0.2s ease-in-out;
 }
 
-/* Action Buttons */
-.action-btns {
+/* Action Buttons Styling  */
+.icon-btn {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  margin-right: 8px;
+  font-size: 16px;
+  border-radius: 50%;
+  position: relative;
+  transition: 0.2s ease;
+}
+
+.icon-btn.view {
+  color: #3498db;
+}
+.icon-btn.edit {
+  color: #f1c40f;
+}
+.icon-btn.delete {
+  color: #e74c3c;
+}
+
+.icon-btn:hover {
+  opacity: 0.8;
+}
+
+.icon-btn::after {
+  content: attr(title);
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #222;
+  color: #fff;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.2s ease;
+  white-space: nowrap;
+}
+
+.icon-btn:hover::after {
+  opacity: 1;
+}
+
+.dataTables_filter input {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 14px;
+  width: 220px;
+  margin-left: 10px;
+}
+
+.dataTables_wrapper .dataTables_paginate {
   display: flex;
   justify-content: center;
-  gap: 5px;
-}
-
-.action-btns button,
-.view-btn {
-  padding: 6px 12px;
-  font-size: 13px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-}
-
-.edit-btn {
-  background-color: #007bff;
-  color: white;
-}
-
-.edit-btn:hover {
-  background-color: #0056b3;
-}
-
-.delete-btn {
-  background-color: #dc3545;
-  color: white;
-}
-
-.delete-btn:hover {
-  background-color: #a71d2a;
-}
-
-.view-btn {
-  background-color: #17a2b8;
-  color: white;
-  margin-right: 5px;
-}
-
-.view-btn:hover {
-  background-color: #117a8b;
-}
-
-/* Pagination */
-.dataTables_wrapper .dataTables_paginate {
-  margin-top: 20px;
-  text-align: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 24px;
 }
 
 .dataTables_wrapper .dataTables_paginate .paginate_button {
-  background-color: #ffffff;
-  border: 1px solid #ccc;
-  padding: 5px 12px;
-  margin: 0 3px;
-  border-radius: 5px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 8px;
   color: #333;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-  background-color: #007bff;
-  color: white !important;
-  border-color: #007bff;
+  background-color: #801100;
+  color: #fff !important;
+  border-color: #801100;
 }
 
 .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-  background-color: #007bff;
-  color: white !important;
-  border-color: #007bff;
-  font-weight: bold;
+  background-color: #801100;
+  color: #fff !important;
+  border-color: #801100;
+  font-weight: 600;
 }
 
-/* Modal Styling */
 .modal {
   display: none;
   position: fixed;
@@ -342,4 +418,89 @@ table.dataTable tbody tr:hover {
 
 .filter-buttons select:hover {
   background-color: #f5f5f5;
+}
+
+@media (max-width: 576px) {
+  .employee-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .header-title h1 {
+    font-size: 16px;
+  }
+
+  .filter-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .filter-buttons select,
+  .filter-buttons input[type="date"] {
+    width: 100%;
+    font-size: 13px;
+  }
+
+  .data-table-container {
+    padding: 16px;
+    max-height: none;
+    overflow-x: auto;
+  }
+
+  table#applicantTable th,
+  table#applicantTable td,
+  table.dataTable th,
+  table.dataTable td {
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+
+  .dataTables_filter input {
+    width: 100%;
+    margin-top: 10px;
+    margin-left: 0;
+  }
+
+  .dataTables_wrapper .dataTables_paginate {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .modal-content {
+    width: 95%;
+    margin: 5% auto;
+    padding: 1.5rem 1rem;
+  }
+
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: 1rem;
+  }
+
+  .modal-title {
+    font-size: 1.25rem;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .btn-print {
+    width: 100%;
+    justify-content: center;
+    font-size: 14px;
+  }
+
+  .icon-btn {
+    font-size: 14px;
+    margin-right: 4px;
+  }
+
+  .icon-btn::after {
+    font-size: 11px;
+    bottom: -26px;
+  }
 }
