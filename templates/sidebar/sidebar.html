@@ -1,89 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sidebar</title>
-  <link rel="stylesheet" href="../../style/sidebar.css" />
-  <link rel="icon" href="../../images/assets/logo.png" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyDun5JjLLS1ooi2lV4og5ykH9sq6ATIWs0",
-      authDomain: "hhi-hrms.firebaseapp.com",
-      projectId: "hhi-hrms",
-      storageBucket: "hhi-hrms.firebasestorage.app",
-      messagingSenderId: "478227639599",
-      appId: "1:478227639599:web:2090cc4389b34fd5e545da",
-      measurementId: "G-5YT8H6G8BY"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-  </script>
-</head>
-<body>
-
-  <div class="sidebar">
-    <div class="logo-container">
-      <img src="/HRMS/images/assets/logo.png" alt="Logo">
-    </div>
-
-    <a href="/HRMS/templates/dashboard/dashboard.html" data-label="Dashboard">
-      <span class="material-symbols-outlined">dashboard</span>
-    </a>
-    <a href="/HRMS/templates/employee/employee.html" data-label="Employees">
-      <span class="material-symbols-outlined">group</span>
-    </a>
-    <a href="#" data-label="Departments">
-      <span class="material-symbols-outlined">business</span>
-    </a>
-    <a href="#" data-label="Settings">
-      <span class="material-symbols-outlined">settings</span>
-    </a>
-
-    <div class="logout-section">
-      <a href="#" class="logout-link" data-label="Logout">
-        <span class="material-symbols-outlined">logout</span>
-      </a>
-    </div>
+<div class="sidebar">
+  <div class="logo-container">
+    <img src="/HRMS/images/assets/logo.png" alt="Logo">
   </div>
 
+  <a href="/HRMS/templates/dashboard/dashboard.html" data-label="Dashboard">
+    <span class="material-symbols-outlined">dashboard</span>
+  </a>
+  <a href="/HRMS/templates/employee/employee.html" data-label="Employees">
+    <span class="material-symbols-outlined">group</span>
+  </a>
+  <a href="#" data-label="Departments">
+    <span class="material-symbols-outlined">business</span>
+  </a>
+  <a href="#" data-label="Settings">
+    <span class="material-symbols-outlined">settings</span>
+  </a>
 
-  <script>
-    const auth = firebase.auth();
-
-    document.querySelector('.logout-link').addEventListener('click', function (e) {
-      e.preventDefault();
-
-      Swal.fire({
-        title: 'Are you sure?',
-        text: 'You will be logged out of the system.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, logout',
-        cancelButtonText: 'Cancel',
-        reverseButtons: true
-      }).then((result) => {
-        if (result.isConfirmed) {
-          auth.signOut().then(() => {
-            Swal.fire({
-              title: 'Logged out!',
-              text: 'You have been successfully logged out.',
-              icon: 'success',
-              timer: 1500,
-              showConfirmButton: false
-            }).then(() => {
-              window.location.replace("/templates/auth/login.html?logout=true");
-            });
-          }).catch((error) => {
-            Swal.fire('Error', error.message, 'error');
-          });
-        }
-      });
-    });
-  </script>
-</body>
-</html>
+  <div class="logout-section">
+    <a href="#" class="logout-link" data-label="Logout">
+      <span class="material-symbols-outlined">logout</span>
+    </a>
+  </div>
+</div>

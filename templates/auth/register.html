@@ -5,8 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Register - HR Management System</title>
-  <link rel="stylesheet" href="/style/register.css"> <!-- Changed to absolute path -->
-  <link rel="icon" href="/images/assets/logo.png"> <!-- Changed to absolute path -->
+  <link rel="stylesheet" href="../../style/register.css"> <!-- Changed to absolute path -->
+  <link rel="icon" href="../../images/assets/logo.png"> <!-- Changed to absolute path -->
   <!-- Firebase SDK v9 (newer version) -->
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
@@ -16,7 +16,7 @@
   <header></header>
 
   <div class="register-container">
-    <img src="/images/assets/logo.png" alt="Logo"> <!-- Changed to absolute path -->
+    <img src="../../images/assets/logo.png" alt="Logo"> <!-- Changed to absolute path -->
     <h2><span>Hyacinth</span> - Register</h2>
 
     <form onsubmit="return register(event)">
@@ -42,7 +42,7 @@
 
       <div class="button-container">
         <button type="submit" id="registerBtn">Register</button>
-        <p>Already have an account? <a href="/templates/auth/login.html"><span>Login</span></a></p>
+        <p>Already have an account? <a href="/HRMS/templates/auth/login.html"><span>Login</span></a></p>
       </div>
     </form>
     <p id="error-message" style="color: red; text-align: center; margin-top: 10px;"></p>
@@ -109,7 +109,7 @@
         
         // Redirect to login after 3 seconds
         setTimeout(() => {
-          window.location.href = "/templates/auth/login.html";
+          window.location.href = "/HRMS/templates/auth/login.html";
         }, 3000);
         
       } catch (error) {
